@@ -1,33 +1,31 @@
 var connection = require("./connection.js");
 
 var orm = {
-  selectAll: function(table) {
+  selectAll: function(table, cb) {
     var queryString = "SELECT * FROM ??";
     connection.query(queryString, [table], function(err, result) {
       if (err) throw err;
-      console.log(result);
+      cb(result);
     });
   },
 
-  insertOne: function(table, burger_name) {
+  insertOne: function(table, burger_name, devoured, cb) {
     var queryString = "INSERT INTO ?? VALUES (id, ? , ?)";
-    console.log(queryString)
-    connection.query(queryString, [table, burger_name], function(err, result) {
+    
+    connection.query(queryString, [table, burger_name, devoured], function(err, result) {
       if (err) throw err;
-      console.log(result);
+      
+      cb(result);
     });
   },
 
-  updateOne: function(tableOneCol, tableTwoForeignKey, tableOne, tableTwo) {
-    var queryString =
-      "SELECT ??, COUNT(??) AS count FROM ?? LEFT JOIN ?? ON ??.??= ??.id GROUP BY ?? ORDER BY count DESC LIMIT 1";
+  updateOne: function(table, column, newValue, column2, oldValue, cb) {
+    var queryString = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
 
-    connection.query(
-      queryString,
-      [tableOneCol, tableOneCol, tableOne, tableTwo, tableTwo, tableTwoForeignKey, tableOne, tableOneCol],
+    connection.query(queryString,[table, column, newValue, column2, oldValue],
       function(err, result) {
         if (err) throw err;
-        console.log(result);
+        cb(result);
       }
     );
   }
